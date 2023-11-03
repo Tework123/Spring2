@@ -62,6 +62,10 @@ local.properties
 .loadpath
 .factorypath
 .properties
+hibernate.xml
+hibernate.cfg.xml
+db.properties
+
 
 ##############################
 ## NetBeans
