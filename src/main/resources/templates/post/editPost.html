@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>People</title>
+</head>
+<body>
+<form th:method="PATCH" th:action="@{/post/{id}(id=${post.getId()})}" th:object="${post}">
+    <label for="name">Name</label>
+    <input name="name" type="text" th:field="*{name}" id="name"/>
+    <br>
+    <label for="text">Text</label>
+    <input name="text" type="text" th:field="*{text}" id="text"/>
+
+<!--    <label for="datePublish">Text</label>-->
+<!--    <input name="datePublish" type="text" th:field="*{datePublish}" id="datePublish"/>-->
+
+    <input type="submit" value="Edit post"/>
+
+</form>
+
+</body>
+</html>

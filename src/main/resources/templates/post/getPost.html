@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Post</title>
+</head>
+<body>
+<p>Id:</p>
+<p th:text="${post.getId()}">Value</p>
+<p>Text:</p>
+<p th:text="${post.getText()}">Value</p>
+<p>DatePublish:</p>
+<p th:text="${post.getDatePublish}">Value</p>
+
+
+<a th:href="@{/post/{id}/editPost(id=${post.getId()})}">Edit post</a>
+
+<form th:method="DELETE" th:action="@{/post/{id}(id=${post.getId()})}">
+    <input type="submit" value="Delete">
+</form>
+
+
+</body>
+</html>
