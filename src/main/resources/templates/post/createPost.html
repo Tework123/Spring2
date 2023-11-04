@@ -11,10 +11,11 @@
 
     <label for="name">Name</label>
     <input name="name" type="text" th:field="*{name}" id="name"/>
+    <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">text error</div>
 
     <label for="text">Text</label>
     <input name="text" type="text" th:field="*{text}" id="text"/>
-    <!--    <div style="color:red" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">text error</div>-->
+    <div style="color:red" th:if="${#fields.hasErrors('text')}" th:errors="*{text}">text error</div>
 
 
     <input type="submit" value="Create new post"/>

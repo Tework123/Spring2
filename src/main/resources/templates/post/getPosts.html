@@ -7,7 +7,7 @@
 <body>
 <h2>All posts:</h2>
 <div th:each="post: ${posts}">
-    <a th:href="@{/post/{id}(id=${post.getId()})}" th:text="${post.getText()}">post</a>
+    <a th:href="@{/post/{id}(id=${post.getId()})}" th:text="${post.getName()}">post</a>
 </div>
 <hr>
 <a href="/post/createPost">Create new post</a>
