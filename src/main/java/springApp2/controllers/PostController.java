@@ -4,9 +4,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springApp2.models.Post;
 import springApp2.services.PostService;
 import jakarta.validation.Valid;
+
+import java.io.IOException;
 
 
 @Controller
@@ -32,18 +35,25 @@ public class PostController {
     }
 
     @PostMapping("")
-    public String createPost(@Valid Post post, BindingResult bindingResult) {
+    public String createPost(@Valid Post post, @RequestParam("file1") MultipartFile file1,
+                             @RequestParam("file2") MultipartFile file2,
+                             BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             return "post/createPost";
         }
-        postService.createPost(post);
+
+        postService.createPost(post, file1, file2);
         return "redirect:/post";
 
     }
 
     @GetMapping("/{id}")
     public String getPost(@PathVariable("id") Integer id, Model model) {
-        model.addAttribute("post", postService.getPost(id));
+        Post post = postService.getPost(id);
+
+        model.addAttribute("post", post);
+        model.addAttribute("photos", post.getPhotos());
+
         return "post/getPost";
     }
 
