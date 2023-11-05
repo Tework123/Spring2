@@ -22,19 +22,33 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public Post createPost(Post post) throws IOException {
-
+    public Post createPost(Post post, MultipartFile file1, MultipartFile file2) throws IOException {
+        Photo photo1 = toImageEntity(file1);
+        post.addPhotoToPost(photo1);
+        Photo photo2 = toImageEntity(file2);
+        post.addPhotoToPost(photo2);
         return postRepository.save(post);
     }
 
+
     private Photo toImageEntity(MultipartFile file1) throws IOException {
         Photo photo = new Photo();
-        photo.setName(file1.getName());
-        photo.setOriginalFileName(file1.getOriginalFilename());
-        photo.setContentType(file1.getContentType());
-        photo.setSize(file1.getSize());
-        photo.setBytes(file1.getBytes());
+        String fileName1 = StringUtils.cleanPath(file1.getOriginalFilename());
+
+        photo.setName(fileName1);
         return photo;
+
+    }
+
+    public void savePhotos(MultipartFile file1, MultipartFile file2,
+                           Post savedPost) throws IOException {
+        String fileName = StringUtils.cleanPath(file1.getOriginalFilename());
+        String fileName2 = StringUtils.cleanPath(file2.getOriginalFilename());
+
+        String uploadDir = "src/main/resources/static/photos/" + savedPost.getId();
+
+        FileUploadUtil.saveFile(uploadDir, fileName, file1);
+        FileUploadUtil.saveFile(uploadDir, fileName2, file2);
 
     }
 

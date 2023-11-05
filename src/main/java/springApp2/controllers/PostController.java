@@ -2,15 +2,12 @@ package springApp2.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springApp2.models.Post;
-import springApp2.repositories.PostRepository;
 import springApp2.services.PostService;
 import jakarta.validation.Valid;
-import springApp2.utils.FileUploadUtil;
 
 import java.io.IOException;
 
@@ -20,6 +17,7 @@ import java.io.IOException;
 public class PostController {
 
     private final PostService postService;
+
 
     public PostController(PostService postService) {
         this.postService = postService;
@@ -39,20 +37,15 @@ public class PostController {
 
     @PostMapping("")
     public String createPost(@Valid Post post, @RequestParam("file1") MultipartFile file1,
+                             MultipartFile file2,
 
                              BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             return "post/createPost";
         }
 
-        String fileName = StringUtils.cleanPath(file1.getOriginalFilename());
-        post.setPhoto(fileName);
-
-        Post savedPost = postService.createPost(post);
-
-        String uploadDir = "src/main/resources/static/photos/" + savedPost.getId();
-
-        FileUploadUtil.saveFile(uploadDir, fileName, file1);
+        Post savedPost = postService.createPost(post, file1, file2);
+        postService.savePhotos(file1, file2, savedPost);
 
         return "redirect:/post";
 
@@ -61,9 +54,14 @@ public class PostController {
     @GetMapping("/{id}")
     public String getPost(@PathVariable("id") Integer id, Model model) {
         Post post = postService.getPost(id);
+        System.out.println(post.getPhotos());
 
         model.addAttribute("post", post);
-//        model.addAttribute("photo1", post.getPhoto());
+        for (int i = 0; i < post.getPhotos().size(); i++) {
+            post.getPhotos().get(i).getPhotoImagePath();
+        }
+        model.addAttribute("photos", post.getPhotos());
+
 
         return "post/getPost";
     }

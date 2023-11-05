@@ -22,29 +22,21 @@ public class Photo {
 
     private String name;
 
-    private String originalFileName;
-
-    private Long size;
-
-    private String contentType;
-
-    private boolean isPreviewImage;
-
-    @Lob
-    private byte[] bytes;
-
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private Post post;
+
+    @Transient
+    public String getPhotoImagePath() {
+        if (name == null || id == null) return null;
+
+        return post.getId() + "/" + name;
+    }
 
     @Override
     public String toString() {
         return "Photo{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", originalFileName='" + originalFileName + '\'' +
-                ", size=" + size +
-                ", contentType='" + contentType + '\'' +
-                ", isPreviewImage=" + isPreviewImage +
                 ", post=" + post +
                 '}';
     }
