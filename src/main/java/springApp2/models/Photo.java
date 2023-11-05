@@ -1,19 +1,13 @@
 package springApp2.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Arrays;
 
 @Entity
-@Table(name = "photo")
-@Setter
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "photos")
+@Data
 public class Photo {
 
     @Id
@@ -27,8 +21,9 @@ public class Photo {
 
     @Transient
     public String getPhotoImagePath() {
-        if (name == null || id == null) return null;
-
+        if (name == null || id == null) {
+            return null;
+        }
         return post.getId() + "/" + name;
     }
 

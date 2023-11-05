@@ -1,5 +1,6 @@
 package springApp2.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,14 +15,11 @@ import java.io.IOException;
 
 @Controller
 @RequestMapping("/post")
+@RequiredArgsConstructor
 public class PostController {
 
+    //  RequiredArgsConstructor заменяет конструктор
     private final PostService postService;
-
-
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
 
     @GetMapping("")
     public String getPosts(Model model) {
