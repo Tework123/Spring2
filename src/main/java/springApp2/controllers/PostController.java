@@ -2,12 +2,15 @@ package springApp2.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springApp2.models.Post;
+import springApp2.repositories.PostRepository;
 import springApp2.services.PostService;
 import jakarta.validation.Valid;
+import springApp2.utils.FileUploadUtil;
 
 import java.io.IOException;
 
@@ -36,13 +39,21 @@ public class PostController {
 
     @PostMapping("")
     public String createPost(@Valid Post post, @RequestParam("file1") MultipartFile file1,
-                             @RequestParam("file2") MultipartFile file2,
+
                              BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             return "post/createPost";
         }
 
-        postService.createPost(post, file1, file2);
+        String fileName = StringUtils.cleanPath(file1.getOriginalFilename());
+        post.setPhoto(fileName);
+
+        Post savedPost = postService.createPost(post);
+
+        String uploadDir = "src/main/resources/static/photos/" + savedPost.getId();
+
+        FileUploadUtil.saveFile(uploadDir, fileName, file1);
+
         return "redirect:/post";
 
     }
@@ -52,7 +63,7 @@ public class PostController {
         Post post = postService.getPost(id);
 
         model.addAttribute("post", post);
-        model.addAttribute("photos", post.getPhotos());
+//        model.addAttribute("photo1", post.getPhoto());
 
         return "post/getPost";
     }

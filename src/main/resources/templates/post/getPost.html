@@ -12,9 +12,12 @@
 <p>DatePublish:</p>
 <p th:text="${post.getDateCreate}">Value</p>
 
-<div th:each="photoOne: ${photos}">
-    <img th:src="@{/photosUrl/{id}(id=${photoOne.getId()})}" height="100px" alt="not photo"/>
-</div>
+
+<!--<img th:src="@{/photos/{id}(id=${photoOne.getId()})}" height="100px" alt="not photo"/>-->
+<img th:src="@{/photos/{path}(path=${post.getPhotoImagePath()})}" />
+<!--<div th:each="photoOne: ${photos}">-->
+<!--    <img th:src="@{/photosUrl/{id}(id=${photoOne.getId()})}" height="100px" alt="not photo"/>-->
+<!--</div>-->
 
 
 <a th:href="@{/post/{id}/editPost(id=${post.getId()})}">Edit post</a>

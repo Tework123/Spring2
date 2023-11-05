@@ -22,22 +22,9 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public void createPost(Post post, MultipartFile file1, MultipartFile file2) throws IOException {
-        Photo photo1;
-        Photo photo2;
-        if (file1.getSize() != 0) {
-            photo1 = toImageEntity(file1);
-            photo1.setPreviewImage(true);
-            post.addPhotoToPost(photo1);
-        }
-        if (file2.getSize() != 0) {
-            photo2 = toImageEntity(file2);
-            post.addPhotoToPost(photo2);
-        }
-//      устанавливаем первое фото для поста
-        Post postFromDb = postRepository.save(post);
-        postFromDb.setPreviewPhotoId(postFromDb.getPhotos().get(0).getId());
-        postRepository.save(post);
+    public Post createPost(Post post) throws IOException {
+
+        return postRepository.save(post);
     }
 
     private Photo toImageEntity(MultipartFile file1) throws IOException {

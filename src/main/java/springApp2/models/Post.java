@@ -35,20 +35,20 @@ public class Post {
     @Column(name = "text", unique = false, nullable = false, columnDefinition = "text")
     private String text;
 
-//    @Column(nullable = true, length = 100)
-//    private String photo;
+    @Column(nullable = true, length = 100)
+    private String photo;
 
-    public void addPhotoToPost(Photo photo) {
-        photo.setPost(this);
-        photos.add(photo);
-    }
-
-//    @Transient
-//    public String getPhotoImagePath() {
-//        if (photo == null || id == null) return null;
-//
-//        return "photos/" + id + "/" + photo;
+//    public void addPhotoToPost(Photo photo) {
+//        photo.setPost(this);
+//        photos.add(photo);
 //    }
+
+    @Transient
+    public String getPhotoImagePath() {
+        if (photo == null || id == null) return null;
+
+        return id + "/" + photo;
+    }
 
     private LocalDateTime dateCreate;
 
@@ -67,10 +67,10 @@ public class Post {
                 '}';
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
-    private List<Photo> photos = new ArrayList<>();
-
-    private Integer previewPhotoId;
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
+//    private List<Photo> photos = new ArrayList<>();
+//
+//    private Integer previewPhotoId;
 
 }
 
