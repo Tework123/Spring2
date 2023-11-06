@@ -17,14 +17,11 @@ public class UserService {
         if (userRepository.findByEmail(user.getEmail()) != null) {
             return false;
         }
-        System.out.println("2222222222222222222");
 
-//        String encodedPas = passwordEncoder.encode(user.getPassword());
         user.setActive(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.getRoles().add(Role.ROLE_USER);
         userRepository.save(user);
-        System.out.println("111111111111111111111");
         return true;
     }
 }

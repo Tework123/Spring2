@@ -24,13 +24,13 @@ public class PostController {
     @GetMapping("")
     public String getPosts(Model model) {
         model.addAttribute("posts", postService.listPosts());
-        return "post/getPosts";
+        return "post/getPostsTemplate";
 
     }
 
     @GetMapping("/createPost")
     public String createPostHtml(Post post) {
-        return "post/createPost";
+        return "post/createPostTemplate";
     }
 
     @PostMapping("")
@@ -39,7 +39,7 @@ public class PostController {
 
                              BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
-            return "post/createPost";
+            return "post/createPostTemplate";
         }
 
         Post savedPost = postService.createPost(post, file1, file2);
@@ -61,13 +61,13 @@ public class PostController {
         model.addAttribute("photos", post.getPhotos());
 
 
-        return "post/getPost";
+        return "post/getPostTemplate";
     }
 
     @GetMapping("/{id}/editPost")
     public String editPostHtml(@PathVariable("id") Integer id, Model model) {
         model.addAttribute("post", postService.getPost(id));
-        return "post/editPost";
+        return "post/editPostTemplate";
     }
 
     //  порядок аргументов в методе важен!
@@ -75,7 +75,7 @@ public class PostController {
     public String editPost(@Valid Post post, BindingResult bindingResult, @PathVariable("id") Integer id
     ) {
         if (bindingResult.hasErrors()) {
-            return "post/editPost";
+            return "post/editPostTemplate";
         }
         postService.editPost(id, post);
         return "redirect:/post";

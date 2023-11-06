@@ -13,7 +13,7 @@
 <p th:text="${post.getDateCreate}">Value</p>
 
 <div th:each="photoOne: ${photos}">
-    <img th:src="@{/photos/{path}(path=${photoOne.getPhotoImagePath()})}" height="100px" alt="not photo"/>
+    <img th:src="@{/photos/{path}(path=${photoOne.getPhotoImagePath()})}" height="200px" alt="not photo"/>
 </div>
 
 <a th:href="@{/post/{id}/editPost(id=${post.getId()})}">Edit post</a>

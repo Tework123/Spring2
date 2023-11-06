@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>Register</title>
 </head>
 <body>
 <h1>Register</h1><hr>
 <h4>Регистрация</h4>
-<form action="/registration" method="POST">
+<form th:action="@{/registration}" th:method="POST">
     Имя пользователя: <input type="text" name="name"><br><br>
     Эл. почта: <input type="email" name="email"><br><br>
     Пароль: <input type="password" name="password"><br><br>

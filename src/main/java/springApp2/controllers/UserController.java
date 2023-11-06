@@ -14,27 +14,22 @@ public class UserController {
 
     @GetMapping("/login")
     public String login() {
-        return "user/login";
+        return "user/loginTemplate";
     }
 
     @GetMapping("/registration")
     public String register() {
-        System.out.println("444444444444444");
-
-        return "user/register";
+        return "user/registerTemplate";
     }
 
     @PostMapping("/registration")
     public String createUser(User user) {
-//        не видит эту функцию
-        System.out.println("3333333333333333");
-
         userService.createUser(user);
-        return "redirect:/user/login";
+        return "redirect:/user/loginTemplate";
     }
 
     @GetMapping("/hello")
     public String securityUrl() {
-        return "user/hello";
+        return "user/helloTemplate";
     }
 }
