@@ -29,6 +29,7 @@ public class User implements UserDetails {
     private String email;
 
     @Column(length = 1000)
+    @Size(min = 4, max = 1000, message = "password length should 4 to 50")
     private String password;
 
     private boolean active;

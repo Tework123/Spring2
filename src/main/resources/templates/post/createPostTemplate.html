@@ -8,7 +8,6 @@
 <h3>Create new post</h3>
 
 <form th:method="POST" enctype="multipart/form-data" th:action="@{/post}" th:object="${post}">
-    прочекать еще раз как передать объект модели в таймлив
     <label for="name">Name</label>
     <input name="name" type="text" th:field="*{name}" id="name"/>
     <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">text error</div>

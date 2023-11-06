@@ -38,7 +38,6 @@ public class PostController {
     @PostMapping("")
     public String createPost(@Valid Post post, @RequestParam("file1") MultipartFile file1,
                              MultipartFile file2, Principal principal,
-
                              BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             return "post/createPostTemplate";

@@ -20,7 +20,7 @@ public class UserController {
     }
 
     @GetMapping("/registration")
-    public String register() {
+    public String register(User user) {
         return "user/registerTemplate";
     }
 
@@ -30,7 +30,7 @@ public class UserController {
             return "user/registerTemplate";
         }
         userService.createUser(user);
-        return "redirect:/user/loginTemplate";
+        return "redirect:/login";
     }
 
     @GetMapping("/hello")

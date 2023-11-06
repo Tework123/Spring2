@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Post</title>
+</head>
+<body>
+<h1>Custom error page</h1>
+<hr>
+<h3>Error status:</h3>
+<h3 th:text="${errorStatus}">Value</h3>
+
+<h4>Message:</h4>
+<h4 th:text="${errorMessage}">Value</h4>
+
+<h4>Return home:</h4>
+<a th:href="@{/post}">Home</a>
+
+
+</body>
+</html>
