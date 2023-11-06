@@ -22,14 +22,18 @@ public class SecurityConfig {
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/registration").permitAll()
-                        .requestMatchers("/post/**", "/photos/**")
+                        .requestMatchers("/", "/error/**", "/registration", "/post/**", "/photos/**").permitAll()
+                        .requestMatchers("/hello")
                         .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                         .anyRequest().authenticated()
-                )
-                .formLogin((form) -> form
+                ).rememberMe((remember) -> remember
+//              куки устанавливаются, после дропа сервера не слетают, key обязателен
+                                .alwaysRemember(true)
+                                .tokenValiditySeconds(60 * 60 * 24 * 365)
+                                .key("mySecret")
+                ).formLogin((form) -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/post",true)
+                        .defaultSuccessUrl("/post", true)
                         .permitAll()
                 )
                 .logout((logout) -> logout.permitAll());

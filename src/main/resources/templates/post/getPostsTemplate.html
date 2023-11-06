@@ -10,16 +10,26 @@
     <a th:href="@{/post/{id}(id=${post.getId()})}" th:text="${post.getName()}">post</a>
 </div>
 <hr>
-<a href="/post/createPost">Create new post</a>
 
-<br>
-<a href="/login">Войти</a>
-<br>
+<!--IF-->
+<div th:if="${user.getEmail()}">
+    <div>
+        <div th:text=" 'Hi,' + ${user.getName()}">Hi, User</div>
+        <a href="/post/createPost">Create new post</a>
+        <p></p>
+        <form th:action="@{/logout}" th:method="POST">
+            <input type="hidden" name="_csrf" value="${_csrf.token}">
+            <input type="submit" value="Выйти"/>
+        </form>
+    </div>
+</div>
+<!--ELSE-->
+<div th:unless="${user.getEmail()}">
+    <a href="/login">Войти</a>
+</div>
+<p></p>
+
 <a href="/registration">Регистрация</a>
-<br>
-<form th:action="@{/logout}" th:method="POST">
-    <input type="hidden" name="_csrf" value="${_csrf.token}">
-    <input type="submit" value="Выйти"/>
-</form>
+
 </body>
 </html>

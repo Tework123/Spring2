@@ -8,10 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import springApp2.models.enums.Role;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -40,6 +37,8 @@ public class User implements UserDetails {
     @JoinColumn(name = "photo_id")
     private Photo avatar;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
 
     private LocalDate dateJoined;
 

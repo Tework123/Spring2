@@ -11,6 +11,7 @@ import springApp2.services.PostService;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
+import java.security.Principal;
 
 
 @Controller
@@ -22,8 +23,9 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("")
-    public String getPosts(Model model) {
+    public String getPosts(Model model, Principal principal) {
         model.addAttribute("posts", postService.listPosts());
+        model.addAttribute("user", postService.getUserByPrincipal(principal));
         return "post/getPostsTemplate";
 
     }
@@ -35,14 +37,14 @@ public class PostController {
 
     @PostMapping("")
     public String createPost(@Valid Post post, @RequestParam("file1") MultipartFile file1,
-                             MultipartFile file2,
+                             MultipartFile file2, Principal principal,
 
                              BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             return "post/createPostTemplate";
         }
 
-        Post savedPost = postService.createPost(post, file1, file2);
+        Post savedPost = postService.createPost(principal, post, file1, file2);
         postService.savePhotos(file1, file2, savedPost);
 
         return "redirect:/post";

@@ -53,6 +53,10 @@ public class Post {
         photos.add(photo);
     }
 
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @JoinColumn
+    private User user;
+
 
 }
 

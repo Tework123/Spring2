@@ -7,22 +7,28 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import springApp2.models.Photo;
 import springApp2.models.Post;
+import springApp2.models.User;
 import springApp2.repositories.PostRepository;
+import springApp2.repositories.UserRepository;
 import springApp2.utils.FileUploadUtil;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     public List<Post> listPosts() {
         return postRepository.findAll();
     }
 
-    public Post createPost(Post post, MultipartFile file1, MultipartFile file2) throws IOException {
+    public Post createPost(Principal principal, Post post, MultipartFile file1, MultipartFile file2) throws IOException {
+        post.setUser(getUserByPrincipal(principal));
+
         Photo photo1 = toImageEntity(file1);
         post.addPhotoToPost(photo1);
         Photo photo2 = toImageEntity(file2);
@@ -30,6 +36,13 @@ public class PostService {
         return postRepository.save(post);
     }
 
+    public User getUserByPrincipal(Principal principal) {
+        if (principal == null) {
+            return new User();
+        }
+        return userRepository.findByEmail(principal.getName());
+
+    }
 
     private Photo toImageEntity(MultipartFile file1) throws IOException {
         Photo photo = new Photo();

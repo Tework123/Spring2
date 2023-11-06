@@ -1,7 +1,9 @@
 package springApp2.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import springApp2.models.User;
@@ -23,7 +25,10 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public String createUser(User user) {
+    public String createUser(@Valid User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "user/registerTemplate";
+        }
         userService.createUser(user);
         return "redirect:/user/loginTemplate";
     }

@@ -9,8 +9,10 @@
 <p th:text="${post.getId()}">Value</p>
 <p>Text:</p>
 <p th:text="${post.getText()}">Value</p>
-<p>DatePublish:</p>
+<p>DateCreate:</p>
 <p th:text="${post.getDateCreate}">Value</p>
+<p>Author:</p>
+<p th:text="${post.getUser().getName()}">Value</p>
 
 <div th:each="photoOne: ${photos}">
     <img th:src="@{/photos/{path}(path=${photoOne.getPhotoImagePath()})}" height="200px" alt="not photo"/>
