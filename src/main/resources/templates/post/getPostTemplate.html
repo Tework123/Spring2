@@ -13,6 +13,8 @@
 <p th:text="${post.getDateCreate}">Value</p>
 <p>Author:</p>
 <p th:text="${post.getUser().getName()}">Value</p>
+<a th:href="@{/profile/{id}(id=${post.getUser().getId()})}">Author</a>
+
 
 <div th:each="photoOne: ${photos}">
     <img th:src="@{/photos/{path}(path=${photoOne.getPhotoImagePath()})}" height="200px" alt="not photo"/>

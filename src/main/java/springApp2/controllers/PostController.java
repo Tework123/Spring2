@@ -45,7 +45,6 @@ public class PostController {
 
         Post savedPost = postService.createPost(principal, post, file1, file2);
         postService.savePhotos(file1, file2, savedPost);
-
         return "redirect:/post";
 
     }
@@ -53,15 +52,8 @@ public class PostController {
     @GetMapping("/{id}")
     public String getPost(@PathVariable("id") Integer id, Model model) {
         Post post = postService.getPost(id);
-        System.out.println(post.getPhotos());
-
         model.addAttribute("post", post);
-        for (int i = 0; i < post.getPhotos().size(); i++) {
-            post.getPhotos().get(i).getPhotoImagePath();
-        }
         model.addAttribute("photos", post.getPhotos());
-
-
         return "post/getPostTemplate";
     }
 

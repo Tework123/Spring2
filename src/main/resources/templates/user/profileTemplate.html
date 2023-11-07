@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+</head>
+<body>
+<h2>All my posts:</h2>
+<p th:text="${user.getName()}">Value</p>
+
+<div th:each="post: ${posts}">
+    <a th:href="@{/post/{id}(id=${post.getId()})}" th:text="${post.getName()}">post</a>
+</div>
+<hr>
+
+
+<a href="/post">Home</a>
+
+</body>
+</html>
