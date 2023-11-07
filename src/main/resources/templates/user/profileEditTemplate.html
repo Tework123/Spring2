@@ -5,11 +5,15 @@
     <title>People</title>
 </head>
 <body>
-<form th:method="PATCH" th:action="@{/profile/edit}" th:object="${user}">
+<form th:method="PATCH" enctype="multipart/form-data" th:action="@{/profile/edit}" th:object="${user}">
     <label for="name">Name</label>
     <input name="name" type="text" th:field="*{name}" id="name"/>
     <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">text error</div>
 
+    <label>Avatar: </label>
+    <div><input type="file" name="file" accept="image/png, image/jpeg"/></div>
+
+    <input type="hidden" name="_csrf" value="${_csrf.token}">
     <input type="submit" value="Edit profile"/>
 
 </form>

@@ -2,6 +2,7 @@ package springApp2.services;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,19 +22,20 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final PhotoService photoService;
 
     public List<Post> listPosts() {
         return postRepository.findAll();
     }
 
-    public Post createPost(Principal principal, Post post, MultipartFile file1, MultipartFile file2) throws IOException {
-        post.setUser(getUserByPrincipal(principal));
-
-        Photo photo1 = toImageEntity(file1);
+    public Post createPost(User currentUser, Post post, MultipartFile file1, MultipartFile file2) throws IOException {
+        post.setUser(currentUser);
+        Photo photo1 = photoService.toImageEntity(file1, currentUser);
+        Photo photo2 = photoService.toImageEntity(file2, currentUser);
         post.addPhotoToPost(photo1);
-        Photo photo2 = toImageEntity(file2);
         post.addPhotoToPost(photo2);
         return postRepository.save(post);
+
     }
 
     public User getUserByPrincipal(Principal principal) {
@@ -44,22 +46,14 @@ public class PostService {
 
     }
 
-    private Photo toImageEntity(MultipartFile file1) throws IOException {
-        Photo photo = new Photo();
-        String fileName1 = StringUtils.cleanPath(file1.getOriginalFilename());
-
-        photo.setName(fileName1);
-        return photo;
-
-    }
-
     public void savePhotos(MultipartFile file1, MultipartFile file2,
-                           Post savedPost) throws IOException {
+                           Post savedPost, @AuthenticationPrincipal User currentUser)
+            throws IOException {
         String fileName = StringUtils.cleanPath(file1.getOriginalFilename());
         String fileName2 = StringUtils.cleanPath(file2.getOriginalFilename());
-
-        String uploadDir = "src/main/resources/static/photos/" + savedPost.getId();
-
+        String uploadDir = "src/main/resources/static/photos/"
+                + currentUser.getEmail() + "/"
+                + savedPost.getId();
         FileUploadUtil.saveFile(uploadDir, fileName, file1);
         FileUploadUtil.saveFile(uploadDir, fileName2, file2);
 

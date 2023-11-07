@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 @Entity
 @Table(name = "photos")
@@ -19,12 +20,25 @@ public class Photo {
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private Post post;
 
+    //  в реальности этого поля в таблице нет
+    @OneToOne(mappedBy = "avatar")
+    private User user;
+
     @Transient
     public String getPhotoImagePath() {
         if (name == null || id == null) {
             return null;
         }
-        return post.getId() + "/" + name;
+
+        return post.getUser().getEmail() + "/" + post.getId() + "/" + name;
+    }
+
+    @Transient
+    public String getAvatarPath() {
+        if (name == null || id == null) {
+            return null;
+        }
+        return user.getEmail() + "/" + name;
     }
 
     @Override
@@ -32,7 +46,6 @@ public class Photo {
         return "Photo{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", post=" + post +
                 '}';
     }
 }

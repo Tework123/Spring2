@@ -8,14 +8,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import springApp2.models.Post;
 import springApp2.models.User;
 import springApp2.repositories.UserRepository;
 import springApp2.services.UserService;
 
+import java.io.IOException;
 import java.security.Principal;
 
 @Controller
@@ -44,35 +44,36 @@ public class UserController {
     }
 
     @GetMapping("/profile/{id}")
-    public String profile(@PathVariable("id") Integer id, Principal principal, Model model) {
+    public String profile(@PathVariable("id") Integer id,
+                          @AuthenticationPrincipal User currentUser,
+                          Model model) {
         User user = userRepository.findById(id).get();
         model.addAttribute("user", user);
         model.addAttribute("posts", user.getPosts());
-
+        model.addAttribute("currentUser", currentUser);
         return "user/profileTemplate";
     }
 
     @GetMapping("/profile/edit")
-    public String editProfileHtml(@AuthenticationPrincipal User user, Model model) {
-        model.addAttribute("user", user);
+    public String editProfileHtml(@AuthenticationPrincipal User currentUser, Model model) {
+        model.addAttribute("user", currentUser);
         return "user/profileEditTemplate";
     }
 
     @PatchMapping("/profile/edit")
     public String editProfile(@Valid User editUser,
-                              @AuthenticationPrincipal User oldUser,
-                              BindingResult bindingResult) {
-
+                              @AuthenticationPrincipal User currentUser,
+                              @RequestParam("file") MultipartFile file,
+                              BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             return "user/profileEditTemplate";
         }
-
-        userService.editProfile(editUser, oldUser);
+        User savedUser = userService.editProfile(editUser, currentUser, file);
+        userService.savePhotos(file, savedUser);
         return "redirect:/post";
     }
 
-    //    в юзере делаем фото для аватара, только одно за раз можно грузить
-    //    А для постов сразу несколько через list
+
     @GetMapping("/hello")
     public String securityUrl() {
         return "user/helloTemplate";

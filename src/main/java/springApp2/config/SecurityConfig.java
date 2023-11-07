@@ -2,6 +2,7 @@ package springApp2.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,10 +23,33 @@ public class SecurityConfig {
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/error/**", "/registration", "/post/**", "/photos/**").permitAll()
-                        .requestMatchers("/hello")
-                        .hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-                        .anyRequest().authenticated()
+                                .requestMatchers(HttpMethod.GET,
+                                        "/post",
+                                        "post/{id}",
+                                        "/error/**",
+                                        "/registration",
+                                        "profile/{id}",
+                                        "/photos/**").permitAll()
+                                .requestMatchers(HttpMethod.GET,
+                                        "/post/createPost",
+                                        "/profile/edit",
+                                        "/post/{id}/editPost").authenticated()
+                                .requestMatchers(HttpMethod.POST,
+                                        "/post").authenticated()
+                                .requestMatchers(HttpMethod.POST,
+                                        "/registration").permitAll()
+
+                                .requestMatchers(HttpMethod.PATCH,
+                                        "/post/{id}",
+                                        "profile/edit").authenticated()
+                                .requestMatchers(HttpMethod.DELETE,
+                                        "/post/{id}").authenticated()
+//                        формочки все равно возвращает, даже без авторизации
+//                        разобраться с этим:
+//                        .requestMatchers().hasAnyAuthority()
+//                        .requestMatchers().hasAnyRole()
+
+
                 ).rememberMe((remember) -> remember
 //              куки устанавливаются, после дропа сервера не слетают, key обязателен
                                 .alwaysRemember(true)

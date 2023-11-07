@@ -5,8 +5,26 @@
     <title>Profile</title>
 </head>
 <body>
+<h2>Profile:</h2>
+<p th:text="${user.getEmail()}">Value</p>
+<p th:text="${user.getDateJoined()}">Value</p>
+
+<div th:if="${currentUser}">
+    <div th:if="${currentUser.getId()==user.getId()}">
+        <a th:href="@{/profile/edit}">Edit my profile</a>
+    </div>
+</div>
+
+
+<div th:if="${user.getAvatar()}">
+    <img th:src="@{/photos/{path}(path=${user.getAvatar().getAvatarPath()})}" height="200px" alt="not photo"
+         src=""/>
+</div>
+<div th:unless="${user.getAvatar()}">
+    <p>not photo</p>
+</div>
+
 <h2>All my posts:</h2>
-<p th:text="${user.getName()}">Value</p>
 
 <div th:each="post: ${posts}">
     <a th:href="@{/post/{id}(id=${post.getId()})}" th:text="${post.getName()}">post</a>
@@ -14,7 +32,7 @@
 <hr>
 
 
+<br><br>
 <a href="/post">Home</a>
-
 </body>
 </html>

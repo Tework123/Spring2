@@ -9,12 +9,14 @@
 <div th:each="post: ${posts}">
     <a th:href="@{/post/{id}(id=${post.getId()})}" th:text="${post.getName()}">post</a>
 </div>
+
+<br>
 <hr>
 
 <!--IF-->
-<div th:if="${user.getEmail()}">
+<div th:if="${currentUser}">
     <div>
-        <div th:text=" 'Hi,' + ${user.getName()}">Hi, User</div>
+        <div th:text=" 'Hi,' + ${currentUser.getName()}">Hi, User</div>
         <a href="/post/createPost">Create new post</a>
         <p></p>
         <form th:action="@{/logout}" th:method="POST">
@@ -22,17 +24,20 @@
             <input type="submit" value="Выйти"/>
         </form>
         <p></p>
-        <a th:href="@{/profile/edit}">Edit my profile</a>
+        <a th:href="@{/profile/{id}(id=${currentUser.getId()})}">My profile</a>
 
     </div>
 </div>
 <!--ELSE-->
-<div th:unless="${user.getEmail()}">
+<div th:unless="${currentUser}">
     <a href="/login">Войти</a>
 </div>
 <p></p>
 
 <a href="/registration">Регистрация</a>
+
+<br><br>
+<a href="/post">Home</a>
 
 </body>
 </html>
