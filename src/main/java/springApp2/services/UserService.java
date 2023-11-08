@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import springApp2.models.Photo;
@@ -16,6 +17,7 @@ import springApp2.utils.FileUploadUtil;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +45,39 @@ public class UserService {
         oldUser.setAvatar(photo);
         return userRepository.save(oldUser);
     }
+
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
+
+    public void userBan(Integer id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            if (user.isActive()) {
+                user.setActive(false);
+            } else {
+                user.setActive(true);
+            }
+            userRepository.save(user);
+        }
+
+    }
+
+    public void setRole(Integer id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            if (user.getRoles().contains(Role.ROLE_USER)) {
+                user.getRoles().clear();
+                user.getRoles().add(Role.ROLE_ADMIN);
+            } else {
+                user.getRoles().clear();
+                user.getRoles().add(Role.ROLE_USER);
+            }
+            userRepository.save(user);
+        }
+
+    }
+
 
     public void savePhotos(MultipartFile file,
                            User savedUser) throws IOException {

@@ -25,6 +25,11 @@
         </form>
         <p></p>
         <a th:href="@{/profile/{id}(id=${currentUser.getId()})}">My profile</a>
+        <div th:if="${currentUser.isAdmin()}">
+            <a th:href="@{/admin}"></a>
+
+        </div>
+
 
     </div>
 </div>
@@ -35,6 +40,9 @@
 <p></p>
 
 <a href="/registration">Регистрация</a>
+
+<p></p>
+
 
 <br><br>
 <a href="/post">Home</a>

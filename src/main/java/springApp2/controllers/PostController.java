@@ -15,7 +15,6 @@ import springApp2.services.PostService;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
-import java.security.Principal;
 
 
 @Controller

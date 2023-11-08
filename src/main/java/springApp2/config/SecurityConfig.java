@@ -4,18 +4,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import springApp2.models.enums.Role;
 import springApp2.services.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 
 
-@EnableWebSecurity
 @RequiredArgsConstructor
 @Configuration
+@EnableWebSecurity
+// заменяет globalSecurity, для работы защищающих аннотаций
+@EnableMethodSecurity
 public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -34,9 +39,12 @@ public class SecurityConfig {
                                         "/post/createPost",
                                         "/profile/edit",
                                         "/post/{id}/editPost").authenticated()
+                                .requestMatchers(
+                                        "/admin/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST,
                                         "/post").authenticated()
                                 .requestMatchers(HttpMethod.POST,
+//                                        "/admin/**",
                                         "/registration").permitAll()
 
                                 .requestMatchers(HttpMethod.PATCH,
@@ -44,11 +52,9 @@ public class SecurityConfig {
                                         "profile/edit").authenticated()
                                 .requestMatchers(HttpMethod.DELETE,
                                         "/post/{id}").authenticated()
-//                        формочки все равно возвращает, даже без авторизации
-//                        разобраться с этим:
-//                        .requestMatchers().hasAnyAuthority()
-//                        .requestMatchers().hasAnyRole()
 
+                                .anyRequest().authenticated()
+//                        формочки все равно возвращает, даже без авторизации
 
                 ).rememberMe((remember) -> remember
 //              куки устанавливаются, после дропа сервера не слетают, key обязателен

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>ADMIN</title>
+</head>
+<body>
+<h1>ADMIN</h1>
+<h2>All users:</h2>
+<table border="1">
+    <tr>
+        <th>Email</th>
+        <th>Active</th>
+        <th>Roles</th>
+        <th>EditRole</th>
+        <th>Ban</th>
+        <th>Profile link</th>
+    </tr>
+    <div th:each="user: ${users}">
+        <tr>
+            <th th:text="${user.getEmail()}">Email</th>
+            <th th:text="${user.isActive()}">Active</th>
+            <th th:text="${user.getRoles()}">Roles</th>
+            <th>
+                <a th:href="@{/admin/user/edit/{id}(id=${user.getId()})}"
+                >Edit user</a>
+            </th>
+
+            <th>
+                <form th:action="@{/admin/user/ban/{id}(id=${user.getId()})}" th:method="POST">
+                    <input type="hidden" name="_csrf" value="${_csrf.token}">
+                    <input type="submit" value="Ban"/>
+                </form>
+            </th>
+            <th>
+                <a th:href="@{/profile/{id}(id=${user.getId()})}"
+                   th:text="${user.getEmail()}">Profile link</a>
+            </th>
+        </tr>
+    </div>
+
+
+</table>
+<!--<div th:each="user: ${users}">-->
+<!--<a th:href="@{/post/{id}(id=${post.getId()})}" th:text="${post.getName()}">post</a>-->
+<!--</div>-->
+
+<br>
+<hr>
+
+</body>
+</html>

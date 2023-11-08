@@ -2,21 +2,19 @@ package springApp2.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import springApp2.models.Post;
+import org.springframework.web.server.ResponseStatusException;
 import springApp2.models.User;
 import springApp2.repositories.UserRepository;
 import springApp2.services.UserService;
 
 import java.io.IOException;
-import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
@@ -44,10 +42,11 @@ public class UserController {
     }
 
     @GetMapping("/profile/{id}")
-    public String profile(@PathVariable("id") Integer id,
-                          @AuthenticationPrincipal User currentUser,
-                          Model model) {
-        User user = userRepository.findById(id).get();
+    public String profile(@PathVariable("id") Integer id, @AuthenticationPrincipal User currentUser, Model model) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Нет такого чела");
+        }
         model.addAttribute("user", user);
         model.addAttribute("posts", user.getPosts());
         model.addAttribute("currentUser", currentUser);
@@ -61,10 +60,7 @@ public class UserController {
     }
 
     @PatchMapping("/profile/edit")
-    public String editProfile(@Valid User editUser,
-                              @AuthenticationPrincipal User currentUser,
-                              @RequestParam("file") MultipartFile file,
-                              BindingResult bindingResult) throws IOException {
+    public String editProfile(@Valid User editUser, @AuthenticationPrincipal User currentUser, @RequestParam("file") MultipartFile file, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             return "user/profileEditTemplate";
         }
