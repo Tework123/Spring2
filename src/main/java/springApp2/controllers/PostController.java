@@ -34,6 +34,12 @@ public class PostController {
 
     }
 
+//    сделать связи manytomany с друзьями(авторов) по гайду в закрепе,
+//    методы: подписка на автора, выдавание только постов друзей(отдельная страница только для
+//    авторизованного, post со всеми оставить, как на хабре
+
+//    поиграть и запросами сложными в базу
+
     @GetMapping("/createPost")
     public String createPostHtml(Post post) {
         return "post/createPostTemplate";

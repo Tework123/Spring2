@@ -24,9 +24,14 @@ public class PostService {
     private final UserRepository userRepository;
     private final PhotoService photoService;
 
+//    public List<Post> listPosts() {
+//        return postRepository.findAll();
+//    }
+
     public List<Post> listPosts() {
-        return postRepository.findAll();
+        return postRepository.findAllByOrderByDateCreateDesc();
     }
+
 
     public Post createPost(User currentUser, Post post, MultipartFile file1, MultipartFile file2) throws IOException {
         post.setUser(currentUser);

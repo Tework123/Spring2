@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Bean;
 @Configuration
 @EnableWebSecurity
 // заменяет globalSecurity, для работы защищающих аннотаций
-@EnableMethodSecurity
+//@EnableMethodSecurity
 public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
 
