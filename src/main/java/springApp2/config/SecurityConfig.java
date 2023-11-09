@@ -36,7 +36,8 @@ public class SecurityConfig {
                                         "profile/{id}",
                                         "/photos/**",
                                         "/profile/{id}/author",
-                                        "/profile/{id}/follower").permitAll()
+                                        "/profile/{id}/follower",
+                                        "post/followPosts").permitAll()
                                 .requestMatchers(HttpMethod.GET,
                                         "/post/createPost",
                                         "/profile/edit",

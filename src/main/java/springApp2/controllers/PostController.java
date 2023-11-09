@@ -33,12 +33,10 @@ public class PostController {
         return "post/getPostsTemplate";
 
     }
-
-//    сделать связи manytomany с друзьями(авторов) по гайду в закрепе,
-//    методы: подписка на автора, выдавание только постов друзей(отдельная страница только для
-//    авторизованного, post со всеми оставить, как на хабре
-
-//    поиграть и запросами сложными в базу
+//    сделать many to many с лайками по статье,
+//    через sets, можно и с композитным ключом попробовать
+//    далее тесты посмотреть, линтеры, докер и остальное для хоста, если инета не будет,то
+//    начинам rest проект
 
     @GetMapping("/createPost")
     public String createPostHtml(Post post) {
@@ -109,6 +107,18 @@ public class PostController {
     public String deletePost(@PathVariable("id") Integer id) {
         postService.deletePost(id);
         return "redirect:/post";
+    }
+
+
+    @GetMapping("/followPosts")
+    public String getFollowPost(@AuthenticationPrincipal User currentUser,
+                                Model model
+    ) {
+
+        model.addAttribute("posts", postService.getFollowPost(currentUser.getId()));
+
+        return "post/followPostsTemplate";
+
     }
 }
 

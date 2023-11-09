@@ -103,12 +103,10 @@ public class UserService {
     }
 
     public List<Follower> getAuthors(Integer id) {
-        User user = userRepository.findById(id).orElse(null);
         return followerRepository.findByUserFollowerId(id);
     }
 
     public List<Follower> getFollowers(Integer id) {
-        User user = userRepository.findById(id).orElse(null);
         return followerRepository.findByUserAuthorId(id);
     }
 

@@ -110,8 +110,6 @@ public class UserController {
         return "user/followersTemplate";
     }
 
-    //    follow unfollow для бесплатной подписки, тыкаешь в одно место и кнопка меняется
-//    чтобы сделать подписку платной - тыкаешь на другую кнопку
     @PostMapping("/follow/{id}")
     public String followToUser(@PathVariable("id") Integer id,
                                @AuthenticationPrincipal User currentUser) {

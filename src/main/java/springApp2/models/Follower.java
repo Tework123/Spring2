@@ -27,6 +27,7 @@ public class Follower {
     User userAuthor;
 
     private LocalDate dateFollow;
+
     @PrePersist
     private void init() {
         dateFollow = LocalDate.now();
@@ -38,8 +39,6 @@ public class Follower {
     @Enumerated(EnumType.STRING)
     private Set<StatusFollow> statusFollow = new HashSet<>();
 
-//    надо сделать метод, который ищет по id пользователя follow сущность, как я делал
-//    с друзьями в социальной сети id == user_1 or id ==user_2
 
 }
 
