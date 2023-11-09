@@ -34,7 +34,9 @@ public class SecurityConfig {
                                         "/error/**",
                                         "/registration",
                                         "profile/{id}",
-                                        "/photos/**").permitAll()
+                                        "/photos/**",
+                                        "/profile/{id}/author",
+                                        "/profile/{id}/follower").permitAll()
                                 .requestMatchers(HttpMethod.GET,
                                         "/post/createPost",
                                         "/profile/edit",
@@ -42,7 +44,9 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/admin/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST,
-                                        "/post").authenticated()
+                                        "/post",
+                                        "/follow/{id}"
+                                ).authenticated()
                                 .requestMatchers(HttpMethod.POST,
 //                                        "/admin/**",
                                         "/registration").permitAll()

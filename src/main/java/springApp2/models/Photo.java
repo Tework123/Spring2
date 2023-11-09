@@ -22,6 +22,7 @@ public class Photo {
 
     //  в реальности этого поля в таблице нет
     @OneToOne(mappedBy = "avatar")
+    @EqualsAndHashCode.Exclude
     private User user;
 
     @Transient

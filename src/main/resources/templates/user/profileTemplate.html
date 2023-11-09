@@ -12,6 +12,26 @@
 <div th:if="${currentUser}">
     <div th:if="${currentUser.getId()==user.getId()}">
         <a th:href="@{/profile/edit}">Edit my profile</a>
+        <p></p>
+        <a th:href="@{/profile/{id}/author(id=${currentUser.getId()})}">Show my authors</a>
+        <p></p>
+        <a th:href="@{/profile/{id}/follower(id=${currentUser.getId()})}">Show my followers</a>
+
+    </div>
+    <!-- кнопка follow-->
+    <div th:if="${currentUser.getId()!=user.getId()}">
+        <div th:if="${author}">
+            <form th:method="POST" th:action="@{/follow/{id}(id=${user.getId()})}" th:object="${user}">
+                <input type="hidden" name="_csrf" value="${_csrf.token}">
+                <input type="submit" value="Unfollow by author"/>
+            </form>
+        </div>
+        <div th:unless="${author}">
+            <form th:method="POST" th:action="@{/follow/{id}(id=${user.getId()})}" th:object="${user}">
+                <input type="hidden" name="_csrf" value="${_csrf.token}">
+                <input type="submit" value="Follow by author"/>
+            </form>
+        </div>
     </div>
 </div>
 

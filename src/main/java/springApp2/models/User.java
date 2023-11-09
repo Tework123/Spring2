@@ -3,9 +3,11 @@ package springApp2.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import springApp2.models.enums.Role;
+import springApp2.models.enums.StatusFollow;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -36,13 +38,33 @@ public class User implements UserDetails {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "photo_id")
+    @EqualsAndHashCode.Exclude
     private Photo avatar;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
+
+//    мне кажется, здесь это не нужно, нет смысла класть куда то объект follower
+//    нужно юзеров класть, но не можем тогда ссылаться на userFollower в таблице Follow
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userFollower")
+//    private Set<Follower> follows;
+//
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userAuthor")
+//    private Set<Follower> authors;
+
+//    public void addFollower(User user) {
+//        follows.add(user);
+//    }
+//
+//    public void addAuthor(User user) {
+//        authors.add(user);
+//    }
+
+
     private LocalDate dateJoined;
 
+    @PrePersist
     private void init() {
         dateJoined = LocalDate.now();
     }

@@ -8,16 +8,21 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import springApp2.models.Follower;
 import springApp2.models.Photo;
 import springApp2.models.Post;
 import springApp2.models.User;
 import springApp2.models.enums.Role;
+import springApp2.models.enums.StatusFollow;
+import springApp2.repositories.FollowerRepository;
 import springApp2.repositories.UserRepository;
 import springApp2.utils.FileUploadUtil;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +30,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final PhotoService photoService;
+    private final FollowerRepository followerRepository;
 
     public boolean createUser(User user) {
         if (userRepository.findByEmail(user.getEmail()) != null) {
@@ -78,12 +84,38 @@ public class UserService {
 
     }
 
+    public void follow(Integer id, User currentUser) {
+        User user = userRepository.findById(id).orElse(null);
+        Follower oldFollow = followerRepository.findByUserFollowerIdAndUserAuthorId(currentUser.getId(), id);
+        if (oldFollow != null) {
+            followerRepository.deleteById(oldFollow.getId());
+        } else {
+            Follower follow = new Follower();
 
-    public void savePhotos(MultipartFile file,
-                           User savedUser) throws IOException {
+            //      установка подписчика
+            follow.setUserFollower(currentUser);
+            follow.getStatusFollow().add(StatusFollow.FREE_FOLLOW);
+            //      установка автора
+            follow.setUserAuthor(user);
+            followerRepository.save(follow);
+
+        }
+    }
+
+    public List<Follower> getAuthors(Integer id) {
+        User user = userRepository.findById(id).orElse(null);
+        return followerRepository.findByUserFollowerId(id);
+    }
+
+    public List<Follower> getFollowers(Integer id) {
+        User user = userRepository.findById(id).orElse(null);
+        return followerRepository.findByUserAuthorId(id);
+    }
+
+
+    public void savePhotos(MultipartFile file, User savedUser) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        String uploadDir = "src/main/resources/static/photos/"
-                + savedUser.getEmail();
+        String uploadDir = "src/main/resources/static/photos/" + savedUser.getEmail();
         FileUploadUtil.saveFile(uploadDir, fileName, file);
     }
 }

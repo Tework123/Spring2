@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Followers</title>
+</head>
+<body>
+<h2> Your followers:</h2>
+<div th:each="follower: ${followers}">
+    <a th:href="@{/profile/{id}(id=${follower.getUserFollower().getId()}) }"
+       th:text="${follower.getUserFollower().getName()}">Author</a>
+</div>
+
+
+<br><br>
+<a href="/post">Home</a>
+
+</body>
+</html>
