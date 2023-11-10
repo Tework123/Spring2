@@ -66,6 +66,7 @@ public class PostController {
         model.addAttribute("photos", post.getPhotos());
         model.addAttribute("currentUser", currentUser);
 
+
         return "post/getPostTemplate";
     }
 

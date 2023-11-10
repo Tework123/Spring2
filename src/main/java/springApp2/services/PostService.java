@@ -102,6 +102,10 @@ public class PostService {
             key.setPostid(post.getId());
             key.setUserid(currentUser.getId());
 
+//            не особо понимаю зачем эта портянка, поэтому пусть останется в коммитах
+//            а я сделаю отдельный запрос в бд на получение лайка или дизлайка
+//            у конкретного поста у конкретного юзера
+
             UserPost newUserPost = new UserPost();
             newUserPost.setId(key);
             newUserPost.setPost(post);
@@ -124,8 +128,9 @@ public class PostService {
 
                 post.setLikes(post.getLikes() - 1);
                 post.setDislikes(post.getDislikes() + 1);
-                post.getPostStatus().clear();
-                post.getPostStatus().add(oldUserPost);
+                if (!post.getPostStatus().contains(oldUserPost)) {
+                    post.getPostStatus().add(oldUserPost);
+                }
                 postRepository.save(post);
 
             } else {
@@ -140,8 +145,9 @@ public class PostService {
 //                а юзеров может быть много, сверху тоже поправить этот момент
 //                и с юзерами посмотреть
 //                и почекать закреп stackoverflow
-                post.getPostStatus().clear();
-                post.getPostStatus().add(oldUserPost);
+                if (!post.getPostStatus().contains(oldUserPost)) {
+                    post.getPostStatus().add(oldUserPost);
+                }
                 postRepository.save(post);
 
             }
@@ -151,9 +157,11 @@ public class PostService {
         System.out.println(post.getLikes());
         System.out.println(post.getDislikes());
 
-//        System.out.println(post.getPostStatus());
         for (UserPost o : post.getPostStatus()) {
-            System.out.println(o);
+            System.out.println(o.getUser());
+            System.out.println(o.getStatus());
+            System.out.println("**");
+
         }
 
         System.out.println("_________________________________");
