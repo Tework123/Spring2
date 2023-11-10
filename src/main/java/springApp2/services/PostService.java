@@ -7,14 +7,9 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import springApp2.models.Follower;
-import springApp2.models.Photo;
-import springApp2.models.Post;
-import springApp2.models.User;
-import springApp2.repositories.FollowerRepository;
-import springApp2.repositories.FollowerUserAuthor;
-import springApp2.repositories.PostRepository;
-import springApp2.repositories.UserRepository;
+import springApp2.models.*;
+import springApp2.models.enums.StatusPost;
+import springApp2.repositories.*;
 import springApp2.utils.FileUploadUtil;
 
 import java.io.IOException;
@@ -30,6 +25,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final PhotoService photoService;
     private final FollowerRepository followerRepository;
+    private final UserPostRepository userPostRepository;
 
 
     public List<Post> listPosts() {
@@ -89,6 +85,79 @@ public class PostService {
         }
 
         return postRepository.findPostByUserInOrderByDateCreateDesc(authors);
+
+    }
+
+    public void setPostStatus(Integer id, User currentUser) {
+//        получаем пост по id
+//        проверяем, если он уже в таблице manytomany, то чекаем set, если там лайк
+//        то ставим дизлайк. В посте убираем лайк, добавляем дизлайк
+//        если в таблице нет такой записи, то создаем, ставим лайк, кнопка меняется на дизлайк
+//        В посте добавляем дизлайк
+        Post post = postRepository.findById(id).orElse(null);
+        UserPost oldUserPost = userPostRepository.findByPostIdAndUser(id, currentUser);
+        if (oldUserPost == null) {
+
+            UserPostKey key = new UserPostKey();
+            key.setPostid(post.getId());
+            key.setUserid(currentUser.getId());
+
+            UserPost newUserPost = new UserPost();
+            newUserPost.setId(key);
+            newUserPost.setPost(post);
+            newUserPost.setUser(currentUser);
+            newUserPost.getStatus().add(StatusPost.LIKE);
+            userPostRepository.save(newUserPost);
+
+            post.getPostStatus().add(newUserPost);
+            currentUser.getPostStatus().add(newUserPost);
+            post.setLikes(post.getLikes() + 1);
+            postRepository.save(post);
+            userRepository.save(currentUser);
+
+        } else {
+            if (oldUserPost.getStatus().contains(StatusPost.LIKE)) {
+
+                oldUserPost.getStatus().clear();
+                oldUserPost.getStatus().add(StatusPost.DISLIKE);
+                userPostRepository.save(oldUserPost);
+
+                post.setLikes(post.getLikes() - 1);
+                post.setDislikes(post.getDislikes() + 1);
+                post.getPostStatus().clear();
+                post.getPostStatus().add(oldUserPost);
+                postRepository.save(post);
+
+            } else {
+                oldUserPost.getStatus().clear();
+                oldUserPost.getStatus().add(StatusPost.LIKE);
+                userPostRepository.save(oldUserPost);
+
+                post.setLikes(post.getLikes() + 1);
+                post.setDislikes(post.getDislikes() - 1);
+
+//                вот тут не надо чистить getPostStatus, он же для поста
+//                а юзеров может быть много, сверху тоже поправить этот момент
+//                и с юзерами посмотреть
+//                и почекать закреп stackoverflow
+                post.getPostStatus().clear();
+                post.getPostStatus().add(oldUserPost);
+                postRepository.save(post);
+
+            }
+
+        }
+
+        System.out.println(post.getLikes());
+        System.out.println(post.getDislikes());
+
+//        System.out.println(post.getPostStatus());
+        for (UserPost o : post.getPostStatus()) {
+            System.out.println(o);
+        }
+
+        System.out.println("_________________________________");
+
 
     }
 

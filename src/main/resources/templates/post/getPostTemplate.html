@@ -9,24 +9,37 @@
 <p th:text="${post.getId()}">Value</p>
 <p>Text:</p>
 <p th:text="${post.getText()}">Value</p>
+<p>Likes:</p>
+<p th:text="${post.getLikes()}">Value</p>
+<p>Dislikes:</p>
+<p th:text="${post.getDislikes()}">Value</p>
 <p>DateCreate:</p>
 <p th:text="${post.getDateCreate}">Value</p>
 <p>Author:</p>
 <p th:text="${post.getUser().getName()}">Value</p>
 <a th:href="@{/profile/{id}(id=${post.getUser().getId()})}">Author</a>
 
-
+<!--цикл с фото поста-->
 <div th:each="photoOne: ${photos}">
     <img th:src="@{/photos/{path}(path=${photoOne.getPhotoImagePath()})}" height="200px" alt="not photo"/>
 </div>
-<div th:if="${currentUser}">
-    <div th:if="${currentUser.getId() == post.getUser().getId()}">
-        <a th:href="@{/post/{id}/editPost(id=${post.getId()})}">Edit post</a>
 
+<!--только для авторизированных пользователей-->
+<div th:if="${currentUser}">
+    <!--    только для владельца поста-->
+    <div th:if="${currentUser.getId() == post.getUser().getId()}">
+        <!--        редактировать пост-->
+        <a th:href="@{/post/{id}/editPost(id=${post.getId()})}">Edit post</a>
+        <!--        удалить пост-->
         <form th:method="DELETE" th:action="@{/post/{id}(id=${post.getId()})}">
             <input type="submit" value="Delete">
         </form>
     </div>
+    <!--    кнопка поставить лайк/дизлайк-->
+    <form th:method="POST" th:action="@{/post/{id}/status(id=${post.getId()})}" th:object="${post}">
+        <input type="hidden" name="_csrf" value="${_csrf.token}">
+        <input type="submit" value="Status">
+    </form>
 </div>
 
 <br><br>

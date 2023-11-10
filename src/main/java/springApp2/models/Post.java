@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "posts")
@@ -56,6 +57,15 @@ public class Post {
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn
     private User user;
+
+
+    @OneToMany(mappedBy = "post")
+    @EqualsAndHashCode.Exclude
+    Set<UserPost> postStatus;
+
+    public Integer likes;
+
+    public Integer dislikes;
 
 
 }

@@ -46,7 +46,8 @@ public class SecurityConfig {
                                         "/admin/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST,
                                         "/post",
-                                        "/follow/{id}"
+                                        "/follow/{id}",
+                                        "/post/{id}/status"
                                 ).authenticated()
                                 .requestMatchers(HttpMethod.POST,
 //                                        "/admin/**",

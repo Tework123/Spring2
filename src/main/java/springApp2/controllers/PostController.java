@@ -120,6 +120,15 @@ public class PostController {
         return "post/followPostsTemplate";
 
     }
+
+    //    POST STATUS (LIKES, DISLIKES)
+    @PostMapping("/{id}/status")
+    public String setPostStatus(@PathVariable("id") Integer id,
+                                @AuthenticationPrincipal User currentUser) {
+        postService.setPostStatus(id, currentUser);
+        return "redirect:/post/" + id;
+
+    }
 }
 
 

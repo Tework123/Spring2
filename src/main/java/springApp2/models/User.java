@@ -77,6 +77,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
 
+
+    @OneToMany(mappedBy = "user")
+    Set<UserPost> postStatus;
+
     public boolean isAdmin() {
         return roles.contains(Role.ROLE_ADMIN);
     }
