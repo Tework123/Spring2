@@ -36,10 +36,21 @@
         </form>
     </div>
     <!--    кнопка поставить лайк/дизлайк-->
-    <form th:method="POST" th:action="@{/post/{id}/status(id=${post.getId()})}" th:object="${post}">
-        <input type="hidden" name="_csrf" value="${_csrf.token}">
-        <input type="submit" value="Status">
-    </form>
+    <!--    если postStatus вернет true - показываем кнопку Dislike-->
+    <div th:if="${postStatus}">
+        <form th:method="POST" th:action="@{/post/{id}/status(id=${post.getId()})}" th:object="${post}">
+            <input type="hidden" name="_csrf" value="${_csrf.token}">
+            <input type="submit" value="Dislike">
+        </form>
+    </div>
+    <!--    иначе кнопку Like-->
+    <div th:unless="${postStatus}">
+        <form th:method="POST" th:action="@{/post/{id}/status(id=${post.getId()})}" th:object="${post}">
+            <input type="hidden" name="_csrf" value="${_csrf.token}">
+            <input type="submit" value="Like">
+        </form>
+    </div>
+
 </div>
 
 <br><br>

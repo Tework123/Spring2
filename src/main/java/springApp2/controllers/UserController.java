@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import springApp2.models.Follower;
 import springApp2.models.User;
 import springApp2.repositories.UserRepository;
+import springApp2.services.PostService;
 import springApp2.services.UserService;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final PostService postService;
     private final UserRepository userRepository;
 
     @GetMapping("/login")
@@ -64,7 +66,6 @@ public class UserController {
                 break;
             }
         }
-
         model.addAttribute("user", user);
         model.addAttribute("posts", user.getPosts());
         model.addAttribute("currentUser", currentUser);
@@ -116,6 +117,14 @@ public class UserController {
         userService.follow(id, currentUser);
         return "redirect:/profile/" + currentUser.getId() + "/author";
 
+    }
+
+    // LIKED POSTS
+    @GetMapping("/profile/likedPosts")
+    public String getLikedPosts(@AuthenticationPrincipal User currentUser, Model model) {
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("likedPosts", postService.getLikedPosts(currentUser));
+        return "user/likedPostsTemplate";
     }
 
 

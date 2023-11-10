@@ -11,10 +11,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import springApp2.models.Post;
 import springApp2.models.User;
+import springApp2.models.UserPost;
+import springApp2.models.enums.StatusPost;
 import springApp2.services.PostService;
 import jakarta.validation.Valid;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Controller
@@ -33,8 +37,7 @@ public class PostController {
         return "post/getPostsTemplate";
 
     }
-//    сделать many to many с лайками по статье,
-//    через sets, можно и с композитным ключом попробовать
+//    надо все ручками протестировать, от разных юзеров, поудалять, изменять и тд.
 //    далее тесты посмотреть, линтеры, докер и остальное для хоста, если инета не будет,то
 //    начинам rest проект
 
@@ -65,8 +68,9 @@ public class PostController {
         model.addAttribute("post", post);
         model.addAttribute("photos", post.getPhotos());
         model.addAttribute("currentUser", currentUser);
+        model.addAttribute("postStatus", postService.getPostStatus(id, currentUser));
 
-
+        System.out.println(postService.getPostStatus(id, currentUser));
         return "post/getPostTemplate";
     }
 

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>My liked posts:</h2>
+<div th:if="${currentUser}">
+    <div th:each="post: ${likedPosts}">
+        <a th:href="@{/post/{id}(id=${post.getId()})}" th:text="${post.getName()}">post</a>
+    </div>
+</div>
+
+<br><br>
+<a href="/post">Home</a>
+
+
+</body>
+</html>

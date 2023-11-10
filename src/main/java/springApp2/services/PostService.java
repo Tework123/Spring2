@@ -14,9 +14,7 @@ import springApp2.utils.FileUploadUtil;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -89,23 +87,16 @@ public class PostService {
     }
 
     public void setPostStatus(Integer id, User currentUser) {
-//        получаем пост по id
-//        проверяем, если он уже в таблице manytomany, то чекаем set, если там лайк
-//        то ставим дизлайк. В посте убираем лайк, добавляем дизлайк
-//        если в таблице нет такой записи, то создаем, ставим лайк, кнопка меняется на дизлайк
-//        В посте добавляем дизлайк
         Post post = postRepository.findById(id).orElse(null);
         UserPost oldUserPost = userPostRepository.findByPostIdAndUser(id, currentUser);
         if (oldUserPost == null) {
 
+//          создаем комбинированный ключ, зачем - хз
             UserPostKey key = new UserPostKey();
             key.setPostid(post.getId());
             key.setUserid(currentUser.getId());
 
-//            не особо понимаю зачем эта портянка, поэтому пусть останется в коммитах
-//            а я сделаю отдельный запрос в бд на получение лайка или дизлайка
-//            у конкретного поста у конкретного юзера
-
+//          создаем новую запись о лайке
             UserPost newUserPost = new UserPost();
             newUserPost.setId(key);
             newUserPost.setPost(post);
@@ -113,24 +104,17 @@ public class PostService {
             newUserPost.getStatus().add(StatusPost.LIKE);
             userPostRepository.save(newUserPost);
 
-            post.getPostStatus().add(newUserPost);
-            currentUser.getPostStatus().add(newUserPost);
             post.setLikes(post.getLikes() + 1);
             postRepository.save(post);
-            userRepository.save(currentUser);
 
         } else {
             if (oldUserPost.getStatus().contains(StatusPost.LIKE)) {
-
                 oldUserPost.getStatus().clear();
                 oldUserPost.getStatus().add(StatusPost.DISLIKE);
                 userPostRepository.save(oldUserPost);
 
                 post.setLikes(post.getLikes() - 1);
                 post.setDislikes(post.getDislikes() + 1);
-                if (!post.getPostStatus().contains(oldUserPost)) {
-                    post.getPostStatus().add(oldUserPost);
-                }
                 postRepository.save(post);
 
             } else {
@@ -140,37 +124,37 @@ public class PostService {
 
                 post.setLikes(post.getLikes() + 1);
                 post.setDislikes(post.getDislikes() - 1);
-
-//                вот тут не надо чистить getPostStatus, он же для поста
-//                а юзеров может быть много, сверху тоже поправить этот момент
-//                и с юзерами посмотреть
-//                и почекать закреп stackoverflow
-                if (!post.getPostStatus().contains(oldUserPost)) {
-                    post.getPostStatus().add(oldUserPost);
-                }
                 postRepository.save(post);
 
             }
-
         }
+    }
 
-        System.out.println(post.getLikes());
-        System.out.println(post.getDislikes());
-
-        for (UserPost o : post.getPostStatus()) {
-            System.out.println(o.getUser());
-            System.out.println(o.getStatus());
-            System.out.println("**");
-
+    public boolean getPostStatus(Integer id, User currentUser) {
+        Set<StatusPost> StatusPostLike = new HashSet<>();
+        StatusPostLike.add(StatusPost.LIKE);
+        UserPost userPost = userPostRepository.findByPostIdAndUser(id, currentUser);
+        if (userPost == null) {
+            return false;
         }
-
-        System.out.println("_________________________________");
-
+        return userPost.getStatus().equals(StatusPostLike);
 
     }
 
+    public List<Post> getLikedPosts(User currentUser) {
+        List<UserPost> userPost = userPostRepository.findByUserAndStatus(currentUser, StatusPost.LIKE);
+        userPost.get(0).getPost().getDateCreate();
+        List<Post> likedPost = new ArrayList<>();
+        for(int i = 0; i < userPost.size(); i++){
+            likedPost.add(userPost.get(i).getPost());
+        }
+        likedPost.sort(Comparator.comparing(Post::getDateCreate, Comparator.reverseOrder()));
 
+        return likedPost;
+    }
 }
+
+
 
 
 

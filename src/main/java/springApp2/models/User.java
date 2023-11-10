@@ -78,7 +78,7 @@ public class User implements UserDetails {
     private Set<Role> roles = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(cascade = CascadeType.REFRESH , fetch = FetchType.EAGER, mappedBy = "user")
     Set<UserPost> postStatus;
 
     public boolean isAdmin() {

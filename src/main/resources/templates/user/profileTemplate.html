@@ -17,6 +17,9 @@
         <p></p>
         <a th:href="@{/profile/{id}/follower(id=${currentUser.getId()})}">Show my followers</a>
 
+        <a th:href="@{/profile/likedPosts}">Show my likedPosts</a>
+
+
     </div>
     <!-- кнопка follow-->
     <div th:if="${currentUser.getId()!=user.getId()}">
@@ -44,13 +47,18 @@
     <p>not photo</p>
 </div>
 
+<!--Все мои посты-->
 <h2>All my posts:</h2>
-
 <div th:each="post: ${posts}">
     <a th:href="@{/post/{id}(id=${post.getId()})}" th:text="${post.getName()}">post</a>
+    <p>Likes:</p>
+    <p th:text="${post.getLikes()}">likes</p>
+    <p>Dislikes:</p>
+    <p th:text="${post.getDislikes()}">dislikes</p>
+    <p>****</p>
+
 </div>
 <hr>
-
 
 <br><br>
 <a href="/post">Home</a>

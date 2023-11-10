@@ -16,12 +16,12 @@ public class UserPost {
     @EmbeddedId
     private UserPostKey id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @MapsId("userId")
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @MapsId("postId")
     @JoinColumn(name = "post_id")
     @EqualsAndHashCode.Exclude

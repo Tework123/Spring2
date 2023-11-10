@@ -59,13 +59,13 @@ public class Post {
     private User user;
 
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "post")
     @EqualsAndHashCode.Exclude
     Set<UserPost> postStatus;
 
-    public Integer likes;
+    public Integer likes = 0;
 
-    public Integer dislikes;
+    public Integer dislikes = 0;
 
 
 }

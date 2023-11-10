@@ -41,7 +41,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET,
                                         "/post/createPost",
                                         "/profile/edit",
-                                        "/post/{id}/editPost").authenticated()
+                                        "/post/{id}/editPost",
+                                        "/profile/likedPosts").authenticated()
                                 .requestMatchers(
                                         "/admin/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST,
