@@ -45,8 +45,13 @@ public class PostService {
         String fileName = StringUtils.cleanPath(file1.getOriginalFilename());
         String fileName2 = StringUtils.cleanPath(file2.getOriginalFilename());
         String uploadDir = "src/main/resources/static/photos/" + currentUser.getEmail() + "/" + savedPost.getId();
+        String uploadDirRunning = "target/classes/static/photos/" + currentUser.getEmail() + "/" + savedPost.getId();
+
         FileUploadUtil.saveFile(uploadDir, fileName, file1);
         FileUploadUtil.saveFile(uploadDir, fileName2, file2);
+        FileUploadUtil.saveFile(uploadDirRunning, fileName, file1);
+        FileUploadUtil.saveFile(uploadDirRunning, fileName2, file2);
+
 
     }
 
@@ -57,7 +62,7 @@ public class PostService {
 
     public void getMyPosts(User currentUser) {
         List<Post> myPosts = postRepository.findByUser(currentUser);
-        for(Post post: myPosts){
+        for (Post post : myPosts) {
             post.setUser(null);
         }
     }
@@ -69,7 +74,9 @@ public class PostService {
         postRepository.save(oldPost);
     }
 
-    public void deletePost(Integer id) {
+    public void deletePost(User currentUser, Integer id) {
+        Post post = postRepository.findById(id).orElse(null);
+        photoService.deletePhotos(currentUser, post);
         postRepository.deleteById(id);
     }
 
@@ -80,7 +87,6 @@ public class PostService {
         for (int i = 0; i < followAuthors.size(); i++) {
             authors.add(followAuthors.get(i).getUserAuthor());
         }
-
         return postRepository.findPostByUserInOrderByDateCreateDesc(authors);
 
     }

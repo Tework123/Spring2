@@ -37,7 +37,6 @@ public class PostController {
         return "post/getPostsTemplate";
 
     }
-//    надо все ручками протестировать, от разных юзеров, поудалять, изменять и тд.
 //    там кнопка на удалить пост не работает, и с картинками непонятно что
 //    далее тесты посмотреть, линтеры, докер и остальное для хоста, если инета не будет,то
 //    начинам rest проект
@@ -109,8 +108,9 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public String deletePost(@PathVariable("id") Integer id) {
-        postService.deletePost(id);
+    public String deletePost(@PathVariable("id") Integer id,
+                             @AuthenticationPrincipal User currentUser) {
+        postService.deletePost(currentUser, id);
         return "redirect:/post";
     }
 

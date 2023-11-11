@@ -114,7 +114,11 @@ public class UserService {
     public void savePhotos(MultipartFile file, User savedUser) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         String uploadDir = "src/main/resources/static/photos/" + savedUser.getEmail();
+        String uploadDirRunning = "target/classes/static/photos/" + savedUser.getEmail();
+
         FileUploadUtil.saveFile(uploadDir, fileName, file);
+        FileUploadUtil.saveFile(uploadDirRunning, fileName, file);
+
     }
 }
 
