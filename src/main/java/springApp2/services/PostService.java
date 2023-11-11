@@ -20,7 +20,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final PhotoService photoService;
     private final FollowerRepository followerRepository;
     private final UserPostRepository userPostRepository;
@@ -51,13 +50,10 @@ public class PostService {
         FileUploadUtil.saveFile(uploadDir, fileName2, file2);
         FileUploadUtil.saveFile(uploadDirRunning, fileName, file1);
         FileUploadUtil.saveFile(uploadDirRunning, fileName2, file2);
-
-
     }
 
     public Post getPost(Integer id) {
         return postRepository.findById(id).orElse(null);
-
     }
 
     public void getMyPosts(User currentUser) {
@@ -96,7 +92,7 @@ public class PostService {
         UserPost oldUserPost = userPostRepository.findByPostIdAndUser(id, currentUser);
         if (oldUserPost == null) {
 
-//          создаем комбинированный ключ, зачем - хз
+//          создаем комбинированный ключ, почему это должен делать я - хз
             UserPostKey key = new UserPostKey();
             key.setPostid(post.getId());
             key.setUserid(currentUser.getId());
@@ -148,7 +144,6 @@ public class PostService {
 
     public List<Post> getLikedPosts(User currentUser) {
         List<UserPost> userPost = userPostRepository.findByUserAndStatus(currentUser, StatusPost.LIKE);
-        userPost.get(0).getPost().getDateCreate();
         List<Post> likedPost = new ArrayList<>();
         for (int i = 0; i < userPost.size(); i++) {
             likedPost.add(userPost.get(i).getPost());
