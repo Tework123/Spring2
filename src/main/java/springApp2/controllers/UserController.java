@@ -1,9 +1,14 @@
 package springApp2.controllers;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,10 +22,7 @@ import springApp2.services.PostService;
 import springApp2.services.UserService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -58,14 +60,17 @@ public class UserController {
         }
 
 //      для смены кнопки follow на unfollow и наоборот
-        List<Follower> authors = userService.getAuthors(currentUser.getId());
         User author = null;
-        for (int i = 0; i < authors.size(); i++) {
-            if (authors.get(i).getUserAuthor().getId() == user.getId()) {
-                author = user;
-                break;
+        if (currentUser != null) {
+            List<Follower> authors = userService.getAuthors(currentUser.getId());
+            for (int i = 0; i < authors.size(); i++) {
+                if (authors.get(i).getUserAuthor().getId() == user.getId()) {
+                    author = user;
+                    break;
+                }
             }
         }
+
         model.addAttribute("user", user);
         model.addAttribute("posts", user.getPosts());
         model.addAttribute("currentUser", currentUser);
@@ -89,6 +94,29 @@ public class UserController {
         }
         User savedUser = userService.editProfile(editUser, currentUser, file);
         userService.savePhotos(file, savedUser);
+        return "redirect:/post";
+    }
+
+    @DeleteMapping("/profile/delete")
+    public String deleteProfile(
+            @AuthenticationPrincipal User currentUser,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+//      убираем куки
+        Cookie cookie = new Cookie("remember-me", null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        postService.getMyPosts(currentUser);
+
+//      убираем юзера из текущей сессии
+        if (request.getSession() != null) {
+            request.getSession().invalidate();
+        }
+
+//      удаляем юзера из базы данных
+        userRepository.deleteById(currentUser.getId());
         return "redirect:/post";
     }
 

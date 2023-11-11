@@ -16,10 +16,18 @@
         <a th:href="@{/profile/{id}/author(id=${currentUser.getId()})}">Show my authors</a>
         <p></p>
         <a th:href="@{/profile/{id}/follower(id=${currentUser.getId()})}">Show my followers</a>
-
+        <p></p>
         <a th:href="@{/profile/likedPosts}">Show my likedPosts</a>
-
-
+        <p></p>
+        <form th:action="@{/logout}" th:method="POST">
+            <input type="hidden" name="_csrf" value="${_csrf.token}">
+            <input type="submit" value="Выйти"/>
+        </form>
+        <p></p>
+        <form th:method="DELETE" th:action="@{/profile/delete}" th:object="${user}">
+            <input type="hidden" name="_csrf" value="${_csrf.token}">
+            <input type="submit" value="Delete my profile"/>
+        </form>
     </div>
     <!-- кнопка follow-->
     <div th:if="${currentUser.getId()!=user.getId()}">

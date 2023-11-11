@@ -41,25 +41,23 @@ public class User implements UserDetails {
     @EqualsAndHashCode.Exclude
     private Photo avatar;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    //  когда удаляем юзера, достаются все его посты, в поле постов user = null,
+//  save метод не вызываем, потому что persist здесь это делает за нас
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
 
-//    мне кажется, здесь это не нужно, нет смысла класть куда то объект follower
+    //    мне кажется, здесь это не нужно, нет смысла класть куда то объект follower
 //    нужно юзеров класть, но не можем тогда ссылаться на userFollower в таблице Follow
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userFollower")
-//    private Set<Follower> follows;
-//
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userAuthor")
-//    private Set<Follower> authors;
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true,
+            fetch = FetchType.LAZY, mappedBy = "userFollower")
+    @EqualsAndHashCode.Exclude
+    private Set<Follower> follows;
 
-//    public void addFollower(User user) {
-//        follows.add(user);
-//    }
-//
-//    public void addAuthor(User user) {
-//        authors.add(user);
-//    }
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true,
+            fetch = FetchType.LAZY, mappedBy = "userAuthor")
+    @EqualsAndHashCode.Exclude
+    private Set<Follower> authors;
 
 
     private LocalDate dateJoined;
@@ -78,7 +76,9 @@ public class User implements UserDetails {
     private Set<Role> roles = new HashSet<>();
 
 
-    @OneToMany(cascade = CascadeType.REFRESH , fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true,
+            fetch = FetchType.EAGER, mappedBy = "user")
+    @EqualsAndHashCode.Exclude
     Set<UserPost> postStatus;
 
     public boolean isAdmin() {

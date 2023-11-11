@@ -38,6 +38,7 @@ public class PostController {
 
     }
 //    надо все ручками протестировать, от разных юзеров, поудалять, изменять и тд.
+//    там кнопка на удалить пост не работает, и с картинками непонятно что
 //    далее тесты посмотреть, линтеры, докер и остальное для хоста, если инета не будет,то
 //    начинам rest проект
 
@@ -70,7 +71,6 @@ public class PostController {
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("postStatus", postService.getPostStatus(id, currentUser));
 
-        System.out.println(postService.getPostStatus(id, currentUser));
         return "post/getPostTemplate";
     }
 
@@ -114,16 +114,11 @@ public class PostController {
         return "redirect:/post";
     }
 
-
     @GetMapping("/followPosts")
     public String getFollowPost(@AuthenticationPrincipal User currentUser,
-                                Model model
-    ) {
-
+                                Model model) {
         model.addAttribute("posts", postService.getFollowPost(currentUser.getId()));
-
         return "post/followPostsTemplate";
-
     }
 
     //    POST STATUS (LIKES, DISLIKES)

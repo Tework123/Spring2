@@ -19,11 +19,6 @@
         <div th:text=" 'Hi,' + ${currentUser.getName()}">Hi, User</div>
         <a href="/post/createPost">Create new post</a>
         <p></p>
-        <form th:action="@{/logout}" th:method="POST">
-            <input type="hidden" name="_csrf" value="${_csrf.token}">
-            <input type="submit" value="Выйти"/>
-        </form>
-        <p></p>
         <a th:href="@{/profile/{id}(id=${currentUser.getId()})}">My profile</a>
         <div th:if="${currentUser.isAdmin()}">
             <a th:href="@{/admin}"></a>

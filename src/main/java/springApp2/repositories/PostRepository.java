@@ -15,4 +15,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     public List<Post> findPostByUserInOrderByDateCreateDesc(@Param("authors") List<User> authors);
 
+    public List<Post> findByUser(User currentUser);
+
 }

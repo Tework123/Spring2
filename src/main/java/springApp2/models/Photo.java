@@ -17,7 +17,7 @@ public class Photo {
 
     private String name;
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Post post;
 
     //  в реальности этого поля в таблице нет
@@ -30,7 +30,9 @@ public class Photo {
         if (name == null || id == null) {
             return null;
         }
-
+        if (post.getUser() == null) {
+            return null;
+        }
         return post.getUser().getEmail() + "/" + post.getId() + "/" + name;
     }
 

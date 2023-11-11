@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Bean;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-// заменяет globalSecurity, для работы защищающих аннотаций
+// заменяет globalSecurity, для работы защищающих аннотаций, в это проекте без них
 //@EnableMethodSecurity
 public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
@@ -30,19 +30,21 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                                 .requestMatchers(HttpMethod.GET,
                                         "/post",
-                                        "post/{id}",
+                                        "/post/{id}",
+                                        "/profile/{id}",
                                         "/error/**",
                                         "/registration",
-                                        "profile/{id}",
-                                        "/photos/**",
-                                        "/profile/{id}/author",
-                                        "/profile/{id}/follower",
-                                        "post/followPosts").permitAll()
+                                        "/photos/**"
+                                ).permitAll()
                                 .requestMatchers(HttpMethod.GET,
                                         "/post/createPost",
-                                        "/profile/edit",
                                         "/post/{id}/editPost",
-                                        "/profile/likedPosts").authenticated()
+                                        "/post/followPosts",
+                                        "/profile/edit",
+                                        "/profile/likedPosts",
+                                        "/profile/{id}/author",
+                                        "/profile/{id}/follower"
+                                ).authenticated()
                                 .requestMatchers(
                                         "/admin/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST,
@@ -51,14 +53,15 @@ public class SecurityConfig {
                                         "/post/{id}/status"
                                 ).authenticated()
                                 .requestMatchers(HttpMethod.POST,
-//                                        "/admin/**",
                                         "/registration").permitAll()
 
                                 .requestMatchers(HttpMethod.PATCH,
                                         "/post/{id}",
                                         "profile/edit").authenticated()
                                 .requestMatchers(HttpMethod.DELETE,
-                                        "/post/{id}").authenticated()
+                                        "/post/{id}",
+                                        "/profile/delete"
+                                ).authenticated()
 
                                 .anyRequest().authenticated()
 //                        формочки все равно возвращает, даже без авторизации

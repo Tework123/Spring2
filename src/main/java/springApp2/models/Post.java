@@ -54,12 +54,13 @@ public class Post {
         photos.add(photo);
     }
 
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private User user;
 
 
-    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "post")
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true,
+            fetch = FetchType.EAGER, mappedBy = "post")
     @EqualsAndHashCode.Exclude
     Set<UserPost> postStatus;
 

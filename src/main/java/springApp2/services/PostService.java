@@ -41,14 +41,6 @@ public class PostService {
 
     }
 
-    public User getUserByPrincipal(Principal principal) {
-        if (principal == null) {
-            return new User();
-        }
-        return userRepository.findByEmail(principal.getName());
-
-    }
-
     public void savePhotos(MultipartFile file1, MultipartFile file2, Post savedPost, @AuthenticationPrincipal User currentUser) throws IOException {
         String fileName = StringUtils.cleanPath(file1.getOriginalFilename());
         String fileName2 = StringUtils.cleanPath(file2.getOriginalFilename());
@@ -61,6 +53,13 @@ public class PostService {
     public Post getPost(Integer id) {
         return postRepository.findById(id).orElse(null);
 
+    }
+
+    public void getMyPosts(User currentUser) {
+        List<Post> myPosts = postRepository.findByUser(currentUser);
+        for(Post post: myPosts){
+            post.setUser(null);
+        }
     }
 
     public void editPost(Integer id, Post editPost) {
@@ -145,7 +144,7 @@ public class PostService {
         List<UserPost> userPost = userPostRepository.findByUserAndStatus(currentUser, StatusPost.LIKE);
         userPost.get(0).getPost().getDateCreate();
         List<Post> likedPost = new ArrayList<>();
-        for(int i = 0; i < userPost.size(); i++){
+        for (int i = 0; i < userPost.size(); i++) {
             likedPost.add(userPost.get(i).getPost());
         }
         likedPost.sort(Comparator.comparing(Post::getDateCreate, Comparator.reverseOrder()));

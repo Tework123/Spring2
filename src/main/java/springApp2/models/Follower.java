@@ -3,6 +3,7 @@ package springApp2.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import springApp2.models.enums.Role;
 import springApp2.models.enums.StatusFollow;
 
@@ -18,12 +19,14 @@ public class Follower {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_follower")
+    @EqualsAndHashCode.Exclude
     User userFollower;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_author")
+    @EqualsAndHashCode.Exclude
     User userAuthor;
 
     private LocalDate dateFollow;

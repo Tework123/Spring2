@@ -15,9 +15,16 @@
 <p th:text="${post.getDislikes()}">Value</p>
 <p>DateCreate:</p>
 <p th:text="${post.getDateCreate}">Value</p>
+
+<!--если автор существует, то он показывает ссылка на его профиль-->
 <p>Author:</p>
-<p th:text="${post.getUser().getName()}">Value</p>
-<a th:href="@{/profile/{id}(id=${post.getUser().getId()})}">Author</a>
+<div th:if="${post.getUser()}">
+    <p th:text="${post.getUser().getName()}">Value</p>
+    <a th:href="@{/profile/{id}(id=${post.getUser().getId()})}">Author</a>
+</div>
+<div th:unless="${post.getUser()}">
+    <p>Author has been deleted, photos forbidden)</p>
+</div>
 
 <!--цикл с фото поста-->
 <div th:each="photoOne: ${photos}">
@@ -27,13 +34,15 @@
 <!--только для авторизированных пользователей-->
 <div th:if="${currentUser}">
     <!--    только для владельца поста-->
-    <div th:if="${currentUser.getId() == post.getUser().getId()}">
-        <!--        редактировать пост-->
-        <a th:href="@{/post/{id}/editPost(id=${post.getId()})}">Edit post</a>
-        <!--        удалить пост-->
-        <form th:method="DELETE" th:action="@{/post/{id}(id=${post.getId()})}">
-            <input type="submit" value="Delete">
-        </form>
+    <div th:if="${post.getUser()}">
+        <div th:if="${currentUser.getId() == post.getUser().getId()}">
+            <!--        редактировать пост-->
+            <a th:href="@{/post/{id}/editPost(id=${post.getId()})}">Edit post</a>
+            <!--        удалить пост-->
+            <form th:method="DELETE" th:action="@{/post/{id}(id=${post.getId()})}">
+                <input type="submit" value="Delete">
+            </form>
+        </div>
     </div>
     <!--    кнопка поставить лайк/дизлайк-->
     <!--    если postStatus вернет true - показываем кнопку Dislike-->
